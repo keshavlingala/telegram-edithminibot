@@ -1,0 +1,5 @@
+node_modules
+ffmpeg
+.DS_Store
+assets/mp3
+.idea
