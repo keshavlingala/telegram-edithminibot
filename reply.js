@@ -2,13 +2,15 @@ import axios from "axios";
 import { apiToken, bot_base_url } from "./config.js";
 import FormData from "form-data";
 import { createReadStream, unlinkSync } from "fs";
-const reply = (chatId, text, entities) => {
-  return axios.post(`${bot_base_url}${apiToken}/sendMessage`, {
+const reply = async (chatId, text, entities) => {
+  const msgResponse= await axios.post(`${bot_base_url}${apiToken}/sendMessage`, {
     chat_id: chatId,
     text,
     entities,
     disable_web_page_preview: true
   });
+  console.log(msgResponse.data);
+  return msgResponse;
 };
 
 export const replyCard = (chat_id, text, inline_keyboard, photoURL) => {
@@ -31,11 +33,24 @@ export const youtubeActionReply = (chat_id, text, keyboard) => {
     disable_web_page_preview: true
   });
 };
-export const yt3progressUpdate = (chat_id, { progress: { percentage } }) => {
+export const yt3progressUpdate = (chat_id, { progress: { percentage } },messageID) => {
+  if(messageID){
+    return axios.post(`${bot_base_url}${apiToken}/editMessageText`, {
+      chat_id,
+      text: `Processing... ${percentage.toFixed(2)}%`,
+      message_id: messageID,
+    });
+  }
   return axios.post(`${bot_base_url}${apiToken}/sendMessage`, {
     chat_id,
     text: `Processing... ${percentage.toFixed(2)}%`,
     disable_notification: true,
+  });
+};
+export const deleteMessage = (chat_id, message_id) => {
+  return axios.post(`${bot_base_url}${apiToken}/deleteMessage`, {
+    chat_id,
+    message_id,
   });
 };
 export const replyWithAudio = async (chat_id) => {

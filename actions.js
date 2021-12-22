@@ -95,7 +95,6 @@ export const actions = {
           }
         }
       })
-      console.log(responses)
       return responses[0]
     }
     catch (err) {
